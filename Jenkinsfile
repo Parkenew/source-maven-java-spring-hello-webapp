@@ -1,20 +1,34 @@
-pipeline{
-    agent{ label 'jenkins-node'}
-    stages{
-        stage('Checkout'){
-            steps{
-                git branch: 'main', url: 'https://github.com/Parkenew/source-maven-java-spring-hello-webapp'
-            }
-        }
-        stage('Maven Build'){
-            steps{
-                sh 'mvn clean package'
-            }
-        }
-        stage('Deploy to Tomcat'){
-            steps{
-                sh ' scp /var/lib/jenkins/workspace/maven_pipeline/target/hello-world.war ubuntu@172.31.38.57:/var/lib/tomcat9/webapps'
-            }
-        }
+pipeline {
+  agent { label 'jenkins-node' }
+
+  triggers {
+    pollSCM '* * * * *'
+  }
+
+  parameters {
+    string defaultValue: '172.31.38.57', name: 'TOMCAT_IP'
+    string defaultValue: 'ubuntu', name: 'TOMCAT_LOGIN_USER'
+    string defaultValue: '/var/lib/tomcat9/webapps', name: 'TOMCAT_WEBAPP_DIR'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/Parkenew/source-maven-java-spring-hello-webapp.git'
+      }
     }
+
+    stage('Maven Build') {
+      tools { maven 'Maven-3' }
+      steps {
+        sh 'mvn clean package'
+      }
+    }
+
+    stage('Deploy to Tomcat') {
+      steps {
+        sh 'scp ${env.WORKSPACE}/target/*.war ${params.TOMCAT_LOGIN_USER}@${params.TOMCAT_IP}:${params.TOMCAT_WEBAPP_DIR}'
+      }
+    }
+  }
 }
