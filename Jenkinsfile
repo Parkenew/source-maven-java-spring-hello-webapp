@@ -1,10 +1,6 @@
 pipeline {
   agent { label 'jenkins-node' }
 
-  triggers {
-    pollSCM '* * * * *'
-  }
-
   parameters {
     string defaultValue: '43.200.164.156', name: 'TOMCAT_IP'
     string defaultValue: 'ubuntu', name: 'TOMCAT_LOGIN_USER'
