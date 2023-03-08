@@ -50,11 +50,13 @@ pipeline {
       }
     }
 
-
-    stage('Publish Docker image') {
-    	agent any
-    	withDockerRegistry(credentialsId: 'dockerhub-jenkins', url: 'https://index.docker.io/v1/') {
-    		 sh "docker image push ${params.IMAGE_REGISTRY_ACCOUNT}/${params.IMAGE_NAME}"
-	}
+    stage('Publish Docker Image') {
+      agent any
+      steps {
+        withDockerRegistry(credentialsId: 'docker-hub-token', url: 'https://index.docker.io/v1/') {
+          sh "docker image push ${params.IMAGE_REGISTRY_ACCOUNT}/${params.IMAGE_NAME}"
+        }
+      }
     }
+  }
 }
