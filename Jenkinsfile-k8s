@@ -73,10 +73,14 @@ spec:
 	  container('maven'){
 	     git branch: 'main', url: 'https://github.com/Parkenew/hello-kube.git'
 	     sh 'sed -i "s/image:.*/image: ${IMAGE_REGISTRY_ACCOUNT}\\/${IMAGE_NAME}:${BUILD_NUMBER}/g" deployment.yaml'
-             sh 'git add deployment.yaml
+             sh 'git add deployment.yaml'
              sh 'git config --global user.name Parkernew'
              sh 'git config --global user.email parkwoo9901@gmail.com'
 	     sh 'git commit -m "Jenkins build number - ${BUILD_NUMBER}"'
+	     withCredentials([gitUsernamePassword(credentialId: 'github-credential', gitToolName: 'default')]){
+	       sh 'git push origin main'
+	     }
+
           }
 	}
     }
