@@ -77,7 +77,7 @@ spec:
              sh 'git config --global user.name Parkernew'
              sh 'git config --global user.email parkwoo9901@gmail.com'
 	     sh 'git commit -m "Jenkins build number - ${BUILD_NUMBER}"'
-	     withCredentials([gitUsernamePassword(credentialId: 'github-credential', gitToolName: 'default')]){
+	     withCredentials([gitUsernamePassword(credentialId: 'github-token', gitToolName: 'default')]){
 	       sh 'git push origin main'
 	     }
 
