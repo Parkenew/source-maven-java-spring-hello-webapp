@@ -11,7 +11,7 @@ spec:
     command: ['sleep']
     args: ['infinity']
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:latest
+    image: gcr.io/kaniko-project/executor:debug
     command: ['sleep']
     args: ['infinity']
     volumeMounts:
@@ -19,10 +19,11 @@ spec:
       mountPath: /kaniko/.docker
   volumes:
   - name: registry-credentials
-    secretName: regcred
-    items:
-    - key: .dockerconfigjson
-      path: config.json
+    secret:
+      secretName: regcred
+      items:
+      - key: .dockerconfigjson
+        path: config.json
 '''
     }
   }
